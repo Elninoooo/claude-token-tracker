@@ -8,6 +8,7 @@ import { ProjectChart } from './components/ProjectChart'
 import { ProjectTable, ConfigDirTable, TopDaysTable } from './components/Tables'
 import { TipsPanel } from './components/TipsPanel'
 import { ComparePanel } from './components/ComparePanel'
+import { LLMInsightsPanel } from './components/LLMInsightsPanel'
 
 const DATA_URL = import.meta.env.VITE_DATA_URL || '/data.json'
 
@@ -119,6 +120,13 @@ export default function App() {
               </div>
             )}
           </div>
+        </Section>
+      )}
+
+      {/* LLM Insights */}
+      {(data.llm_analysis ?? []).length > 0 && (
+        <Section title="Analyse IA">
+          <LLMInsightsPanel data={data} />
         </Section>
       )}
 

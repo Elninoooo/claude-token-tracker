@@ -27,6 +27,11 @@ export interface TopDay {
   totalCost: number
 }
 
+export interface LlmDayAnalysis {
+  date: string
+  bullets: string[]
+}
+
 export interface EcoData {
   kwh: number
   gco2: number
@@ -82,4 +87,5 @@ export interface DashboardData {
   top_days: TopDay[]
   tips: string[]
   median_daily_cost: number
+  llm_analysis: LlmDayAnalysis[]
 }
