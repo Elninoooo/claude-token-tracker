@@ -50,8 +50,8 @@ export function AnomalyPrompt({ data }: { data: DashboardData }) {
           >
             {hasLlm
               ? expanded
-                ? 'Masquer l'analyse →'
-                : 'Lancer l'analyse Haiku →'
+                ? "Masquer l'analyse →"
+                : "Lancer l'analyse Haiku →"
               : expanded
               ? 'Masquer le détail'
               : 'Voir le détail'}

@@ -29,7 +29,8 @@ export function ModelStackedChart({ data }: { data: DashboardData }) {
           <YAxis tick={{ fontSize: 11, fill: '#7d8590' }} tickFormatter={(v) => '$' + v} width={50} />
           <Tooltip
             contentStyle={{ background: '#161b22', border: '1px solid #30363d', borderRadius: 6 }}
-            formatter={(v: number, name: string) => [fmtCost(v), name]}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            formatter={(v: any, name: any) => [typeof v === 'number' ? fmtCost(v) : v, name]}
           />
           <Legend wrapperStyle={{ fontSize: 11 }} />
           {shortNames.map((name, i) => (
@@ -62,7 +63,8 @@ export function ModelPieChart({ data }: { data: DashboardData }) {
           </Pie>
           <Tooltip
             contentStyle={{ background: '#161b22', border: '1px solid #30363d', borderRadius: 6 }}
-            formatter={(v: number, name: string) => [fmtCost(v), name]}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            formatter={(v: any, name: any) => [typeof v === 'number' ? fmtCost(v) : v, name]}
           />
           <Legend wrapperStyle={{ fontSize: 11 }} />
         </PieChart>

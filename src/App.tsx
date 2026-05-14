@@ -24,7 +24,7 @@ function formatRelativeTime(iso: string) {
   return `il y a ${Math.floor(diff / 3600)} h`
 }
 
-function getWeekDateRange(weekStart: string, daysInWeek: number) {
+function getWeekDateRange(weekStart: string) {
   if (!weekStart) return ''
   const start = new Date(weekStart + 'T12:00:00')
   const end = new Date(weekStart + 'T12:00:00')
@@ -73,8 +73,7 @@ export default function App() {
 
   const weekNum = data.current_week_num ?? 0
   const weekStart = data.current_week_start ?? ''
-  const daysInWeek = data.days_in_current_week ?? 0
-  const weekRange = getWeekDateRange(weekStart, daysInWeek)
+  const weekRange = getWeekDateRange(weekStart)
   const hasMonthlyData = (data.monthly_series ?? []).length >= 3
   const hasDailyMedian = (data.median_daily_cost ?? 0) > 0
 

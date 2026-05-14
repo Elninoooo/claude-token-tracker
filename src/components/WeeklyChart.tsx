@@ -2,7 +2,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ReferenceLine, ResponsiveContainer, Cell, LabelList,
 } from 'recharts'
-import type { DashboardData, WeeklySeriesItem } from '../types'
+import type { DashboardData } from '../types'
 import { fmtTokens } from '../utils'
 
 export function WeeklyChart({ data }: { data: DashboardData }) {
@@ -55,11 +55,11 @@ export function WeeklyChart({ data }: { data: DashboardData }) {
               borderRadius: 6,
             }}
             labelStyle={{ color: 'var(--text)', marginBottom: 4 }}
-            formatter={(v: number, _name: string, props: { payload?: WeeklySeriesItem }) => {
-              const payload = props.payload
-              const tokens = payload?.tokens ? ` (${fmtTokens(payload.tokens)})` : ''
-              const isCurrent = payload?.is_current
-              const label = isCurrent ? 'Consommé (semaine en cours)' : 'Consommation'
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            formatter={(value: any, _name: any, props: any) => {
+              const tokens = props.payload?.tokens ? ` (${fmtTokens(props.payload.tokens)})` : ''
+              const label = props.payload?.is_current ? 'Consommé (semaine en cours)' : 'Consommation'
+              const v = typeof value === 'number' ? value : null
               return [v != null ? `${v.toFixed(1)} %${tokens}` : '—', label]
             }}
           />
@@ -86,7 +86,8 @@ export function WeeklyChart({ data }: { data: DashboardData }) {
               position="top"
               fontSize={10}
               fill="var(--muted)"
-              formatter={(v: number | null) => (v != null ? `${v.toFixed(0)}%` : '')}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              formatter={(v: any) => (typeof v === 'number' && v > 0 ? `${v.toFixed(0)}%` : '')}
             />
           </Bar>
         </BarChart>

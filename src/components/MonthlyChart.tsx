@@ -47,8 +47,10 @@ export function MonthlyChart({ data }: { data: DashboardData }) {
               borderRadius: 6,
             }}
             labelStyle={{ color: 'var(--text)', marginBottom: 4 }}
-            formatter={(v: number, _name: string, props: { payload?: { tokens: number } }) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            formatter={(value: any, _name: any, props: any) => {
               const tokens = props.payload?.tokens ? ` (${fmtTokens(props.payload.tokens)})` : ''
+              const v = typeof value === 'number' ? value : null
               return [v != null ? `${v.toFixed(1)} %${tokens}` : '—', 'Consommation']
             }}
           />
@@ -69,7 +71,8 @@ export function MonthlyChart({ data }: { data: DashboardData }) {
               position="top"
               fontSize={10}
               fill="var(--muted)"
-              formatter={(v: number | null) => (v != null ? `${v.toFixed(0)}%` : '')}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              formatter={(v: any) => (typeof v === 'number' && v > 0 ? `${v.toFixed(0)}%` : '')}
             />
           </Bar>
         </BarChart>

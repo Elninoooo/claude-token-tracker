@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
-  ReferenceLine, ResponsiveContainer, Legend,
+  ReferenceLine, ResponsiveContainer,
 } from 'recharts'
 import type { DashboardData } from '../types'
 import { fmtCost } from '../utils'
@@ -78,11 +78,11 @@ export function CostChart({ data, percentMode = false }: CostChartProps) {
           <Tooltip
             contentStyle={{ background: '#161b22', border: '1px solid #30363d', borderRadius: 6 }}
             labelStyle={{ color: '#e6edf3', marginBottom: 4 }}
-            formatter={(v: number) =>
-              percentMode
-                ? [`${v.toFixed(1)} %`, '% médiane']
-                : [fmtCost(v), 'Coût']
-            }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            formatter={(value: any) => {
+              const v = typeof value === 'number' ? value : 0
+              return percentMode ? [`${v.toFixed(1)} %`, '% médiane'] : [fmtCost(v), 'Coût']
+            }}
           />
           <ReferenceLine
             x={pivot.date}
