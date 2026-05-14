@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { DashboardData } from '../types'
+import type { DashboardData } from '../types'
 
 export function useData(url: string) {
   const [data, setData] = useState<DashboardData | null>(null)

@@ -3,7 +3,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   PieChart, Pie, Cell, ResponsiveContainer,
 } from 'recharts'
-import { DashboardData } from '../types'
+import type { DashboardData } from '../types'
 import { fmtCost, MODEL_COLORS, shortModelName } from '../utils'
 
 export function ModelStackedChart({ data }: { data: DashboardData }) {

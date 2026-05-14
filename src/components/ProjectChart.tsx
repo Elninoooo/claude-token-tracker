@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from 'recharts'
-import { DashboardData } from '../types'
+import type { DashboardData } from '../types'
 import { PROJECT_COLORS } from '../utils'
 
 export function ProjectChart({ data }: { data: DashboardData }) {

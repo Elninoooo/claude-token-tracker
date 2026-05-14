@@ -1,4 +1,4 @@
-import { DashboardData } from '../types'
+import type { DashboardData } from '../types'
 
 export function TipsPanel({ data }: { data: DashboardData }) {
   if (!data.tips.length) return null

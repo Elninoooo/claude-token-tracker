@@ -3,7 +3,7 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
   ReferenceLine, ResponsiveContainer, Legend,
 } from 'recharts'
-import { DashboardData } from '../types'
+import type { DashboardData } from '../types'
 import { fmtCost } from '../utils'
 
 const RANGES = [

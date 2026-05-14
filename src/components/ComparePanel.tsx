@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { DashboardData } from '../types'
+import type { DashboardData } from '../types'
 import { fmtCost } from '../utils'
 
 interface PeriodStats {

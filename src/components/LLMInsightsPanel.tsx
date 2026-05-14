@@ -1,4 +1,4 @@
-import { DashboardData } from '../types'
+import type { DashboardData } from '../types'
 import { fmtCost } from '../utils'
 
 export function LLMInsightsPanel({ data }: { data: DashboardData }) {

@@ -1,4 +1,4 @@
-import { DashboardData } from '../types'
+import type { DashboardData } from '../types'
 import { fmtCost, fmtTokens } from '../utils'
 
 interface KPIProps {
