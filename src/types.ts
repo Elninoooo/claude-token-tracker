@@ -27,6 +27,25 @@ export interface TopDay {
   totalCost: number
 }
 
+export interface WeeklySeriesItem {
+  week: string
+  tokens: number
+  pct: number | null
+  is_current: boolean
+}
+
+export interface MonthlySeriesItem {
+  month: string
+  tokens: number
+  pct: number | null
+}
+
+export interface AnomalyDay {
+  date: string
+  tokens: number
+  ratio_to_median: number
+}
+
 export interface LlmDayAnalysis {
   date: string
   bullets: string[]
@@ -88,4 +107,19 @@ export interface DashboardData {
   tips: string[]
   median_daily_cost: number
   llm_analysis: LlmDayAnalysis[]
+  // V2 weekly stats (optionnels — backward compat)
+  weekly_median?: number
+  current_week_tokens?: number
+  current_week_consumed_pct?: number | null
+  current_week_projected_tokens?: number
+  current_week_projected_pct?: number | null
+  weekly_series?: WeeklySeriesItem[]
+  prev_week_tokens?: number
+  prev_week_delta_pct?: number | null
+  anomaly_days?: AnomalyDay[]
+  days_in_current_week?: number
+  current_week_num?: number
+  current_week_start?: string
+  monthly_series?: MonthlySeriesItem[]
+  monthly_median_tokens?: number
 }
