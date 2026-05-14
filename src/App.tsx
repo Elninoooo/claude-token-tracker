@@ -111,27 +111,21 @@ export default function App() {
 
       {/* Graph principal polymorphe */}
       <div className="mb-4">
-        <div className="bg-[var(--panel)] border border-[var(--border)] rounded-lg overflow-hidden">
-          <div className="flex items-center justify-between px-5 pt-5 pb-1">
-            <h2 className="text-sm font-semibold">
-              {graphRange === 'J' && 'Consommation quotidienne (% de la médiane)'}
-              {graphRange === 'S' && 'Consommation hebdomadaire (% de la médiane)'}
-              {graphRange === 'M' && 'Consommation mensuelle (% de la médiane)'}
-            </h2>
-            <RangeToggle
-              value={graphRange}
-              onChange={setGraphRange}
-              disableM={!hasMonthlyData}
-            />
-          </div>
-          <div className="px-0 pb-0">
-            {graphRange === 'J' && (
-              <CostChart data={data} percentMode={hasDailyMedian} />
-            )}
-            {graphRange === 'S' && <WeeklyChart data={data} />}
-            {graphRange === 'M' && <MonthlyChart data={data} />}
-          </div>
+        <div className="flex items-center justify-between mb-2 px-1">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+            {graphRange === 'J' && 'Consommation quotidienne (% de la médiane)'}
+            {graphRange === 'S' && 'Consommation hebdomadaire (% de la médiane)'}
+            {graphRange === 'M' && 'Consommation mensuelle (% de la médiane)'}
+          </span>
+          <RangeToggle
+            value={graphRange}
+            onChange={setGraphRange}
+            disableM={!hasMonthlyData}
+          />
         </div>
+        {graphRange === 'J' && <CostChart data={data} percentMode={hasDailyMedian} />}
+        {graphRange === 'S' && <WeeklyChart data={data} />}
+        {graphRange === 'M' && <MonthlyChart data={data} />}
       </div>
 
       {/* Zone diagnostic conditionnelle */}
