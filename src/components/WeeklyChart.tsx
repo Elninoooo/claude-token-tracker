@@ -7,22 +7,25 @@ import { fmtTokens } from '../utils'
 
 export function WeeklyChart({ data }: { data: DashboardData }) {
   const series = data.weekly_series ?? []
-  const weeklyMedian = data.weekly_median ?? 0
-  const hasMedian = weeklyMedian > 0
-  const projPct = data.current_week_projected_pct
+  const planQuota = data.plan_weekly_token_quota ?? 0
+  const hasQuota = planQuota > 0
+  const projPct = data.plan_weekly_pct_projected
 
-  if (!hasMedian || series.filter((w) => w.tokens > 0).length === 0) {
+  if (!hasQuota || series.filter((w) => w.tokens > 0).length === 0) {
     return (
       <div className="bg-[var(--panel)] border border-[var(--border)] rounded-lg p-5 flex items-center justify-center h-72">
         <p className="text-sm text-[var(--muted)] text-center px-4">
-          Au moins 2 semaines complètes nécessaires pour calculer une médiane
+          Aucune donnée de consommation hebdomadaire
         </p>
       </div>
     )
   }
 
-  const chartData = series.filter((w) => w.tokens > 0 || w.is_current)
-  const maxPct = Math.max(...chartData.map((w) => w.pct ?? 0), 100)
+  // Affichage en % du quota plan
+  const chartData = series
+    .filter((w) => w.tokens > 0 || w.is_current)
+    .map((w) => ({ ...w, displayPct: w.plan_pct ?? 0 }))
+  const maxPct = Math.max(...chartData.map((w) => w.displayPct), 100)
   const yMax = Math.ceil(maxPct / 10) * 10 + 20
 
   return (
@@ -58,31 +61,39 @@ export function WeeklyChart({ data }: { data: DashboardData }) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             formatter={(value: any, _name: any, props: any) => {
               const tokens = props.payload?.tokens ? ` (${fmtTokens(props.payload.tokens)})` : ''
-              const label = props.payload?.is_current ? 'Consommé (semaine en cours)' : 'Consommation'
+              const label = props.payload?.is_current ? 'Quota (semaine en cours)' : '% du quota hebdo'
               const v = typeof value === 'number' ? value : null
               return [v != null ? `${v.toFixed(1)} %${tokens}` : '—', label]
             }}
           />
           <ReferenceLine
             y={100}
-            stroke="var(--muted)"
+            stroke="var(--red)"
             strokeDasharray="4 2"
             label={{
-              value: 'médiane',
+              value: 'quota épuisé',
               position: 'insideTopRight',
               fontSize: 10,
-              fill: 'var(--muted)',
+              fill: 'var(--red)',
             }}
           />
-          <Bar dataKey="pct" radius={[3, 3, 0, 0]} maxBarSize={60}>
+          <Bar dataKey="displayPct" radius={[3, 3, 0, 0]} maxBarSize={60}>
             {chartData.map((entry, i) => (
               <Cell
                 key={`cell-${i}`}
-                fill={entry.is_current ? 'url(#stripe-current)' : 'var(--accent)'}
+                fill={
+                  entry.is_current
+                    ? 'url(#stripe-current)'
+                    : entry.displayPct >= 100
+                      ? 'var(--red)'
+                      : entry.displayPct >= 80
+                        ? 'var(--orange)'
+                        : 'var(--accent)'
+                }
               />
             ))}
             <LabelList
-              dataKey="pct"
+              dataKey="displayPct"
               position="top"
               fontSize={10}
               fill="var(--muted)"
@@ -94,7 +105,7 @@ export function WeeklyChart({ data }: { data: DashboardData }) {
       </ResponsiveContainer>
       {projPct != null && (
         <p className="text-xs text-[var(--muted)] text-right mt-1 pr-4">
-          projection {projPct.toFixed(0)} % ⤴
+          projection fin de semaine : {projPct.toFixed(0)} % du quota ⤴
         </p>
       )}
     </div>

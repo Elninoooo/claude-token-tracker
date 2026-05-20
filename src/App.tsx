@@ -7,11 +7,10 @@ import { MonthlyChart } from './components/MonthlyChart'
 import { CostChart } from './components/CostChart'
 import { RangeToggle } from './components/RangeToggle'
 import type { Range } from './components/RangeToggle'
-import { AnomalyPrompt } from './components/AnomalyPrompt'
-import { CollapsibleSection } from './components/CollapsibleSection'
+import { SkillBreakdownTable, AgentBreakdownTable } from './components/BreakdownTables'
 import { ModelStackedChart, ModelPieChart } from './components/ModelCharts'
 import { ProjectChart } from './components/ProjectChart'
-import { ProjectTable, ConfigDirTable, TopDaysTable } from './components/Tables'
+import { ProjectTable, ConfigDirTable } from './components/Tables'
 import { TipsPanel } from './components/TipsPanel'
 import { LLMInsightsPanel } from './components/LLMInsightsPanel'
 
@@ -113,7 +112,7 @@ export default function App() {
         <div className="flex items-center justify-between mb-2 px-1">
           <span className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
             {graphRange === 'J' && 'Consommation quotidienne (% de la médiane)'}
-            {graphRange === 'S' && 'Consommation hebdomadaire (% de la médiane)'}
+            {graphRange === 'S' && `Consommation hebdomadaire (% du quota ${data.plan_name ?? 'plan'})`}
             {graphRange === 'M' && 'Consommation mensuelle (% de la médiane)'}
           </span>
           <RangeToggle
@@ -127,84 +126,78 @@ export default function App() {
         {graphRange === 'M' && <MonthlyChart data={data} />}
       </div>
 
-      {/* Zone diagnostic conditionnelle */}
-      <div className="mb-4">
-        <AnomalyPrompt data={data} />
-      </div>
-
-      {/* Accordéon Explorer en détail */}
-      <CollapsibleSection label="Explorer en détail">
-        <div className="space-y-6">
-          {/* Répartition par modèle */}
-          <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)] mb-3">
-              Répartition par modèle
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <ModelStackedChart data={data} />
-              <ModelPieChart data={data} />
-            </div>
+      {/* Détail toujours visible — pas d'accordéon */}
+      <div className="space-y-6">
+        {/* Qu'est-ce qui coûte le plus : skills + agents */}
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)] mb-3">
+            Ce qui te coûte le plus
           </div>
-
-          {/* Activité par projet */}
-          <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)] mb-3">
-              Activité par projet
-            </div>
-            <ProjectChart data={data} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <SkillBreakdownTable data={data} />
+            <AgentBreakdownTable data={data} />
           </div>
-
-          {/* Coût quotidien en $ (version legacy) */}
-          <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)] mb-3">
-              Coût quotidien (USD)
-            </div>
-            <CostChart data={data} percentMode={false} />
-          </div>
-
-          {/* Top jours + pistes */}
-          {(data.top_days.length > 0 || data.tips.length > 0) && (
-            <div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)] mb-3">
-                Optimisation
-              </div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <TopDaysTable data={data} />
-                {data.tips.length > 0 && <TipsPanel data={data} />}
-              </div>
-            </div>
-          )}
-
-          {/* Analyse IA */}
-          {(data.llm_analysis ?? []).length > 0 && (
-            <div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)] mb-3">
-                Analyse IA
-              </div>
-              <LLMInsightsPanel data={data} />
-            </div>
-          )}
-
-          {/* Détail tabulaire */}
-          <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)] mb-3">
-              Détail par projet et config
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <ProjectTable data={data} />
-              <ConfigDirTable data={data} />
-            </div>
-          </div>
-
-          {/* Mention écologique */}
-          {data.eco && (
-            <p className="text-xs text-[var(--muted)]">
-              ⚡ ~{data.eco.kwh.toFixed(2)} kWh · 🌱 ~{data.eco.kg_co2.toFixed(2)} kg CO₂ ce mois
-              — Source : {data.eco.source} ({data.eco.note})
-            </p>
-          )}
         </div>
-      </CollapsibleSection>
+
+        {/* Répartition par modèle */}
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)] mb-3">
+            Répartition par modèle
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <ModelStackedChart data={data} />
+            <ModelPieChart data={data} />
+          </div>
+        </div>
+
+        {/* Activité par projet + config (table côte à côte) */}
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)] mb-3">
+            Activité par projet et config
+          </div>
+          <ProjectChart data={data} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+            <ProjectTable data={data} />
+            <ConfigDirTable data={data} />
+          </div>
+        </div>
+
+        {/* Coût quotidien en $ */}
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)] mb-3">
+            Coût quotidien (USD)
+          </div>
+          <CostChart data={data} percentMode={false} />
+        </div>
+
+        {/* Pistes d'optimisation */}
+        {data.tips.length > 0 && (
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)] mb-3">
+              Optimisation
+            </div>
+            <TipsPanel data={data} />
+          </div>
+        )}
+
+        {/* Analyse IA */}
+        {(data.llm_analysis ?? []).length > 0 && (
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)] mb-3">
+              Analyse IA
+            </div>
+            <LLMInsightsPanel data={data} />
+          </div>
+        )}
+
+        {/* Mention écologique */}
+        {data.eco && (
+          <p className="text-xs text-[var(--muted)]">
+            ⚡ ~{data.eco.kwh.toFixed(2)} kWh · 🌱 ~{data.eco.kg_co2.toFixed(2)} kg CO₂ ce mois
+            — Source : {data.eco.source} ({data.eco.note})
+          </p>
+        )}
+      </div>
 
       <footer className="text-xs text-[var(--muted)] text-center pt-6 mt-6 border-t border-[var(--border)]">
         <code className="bg-white/5 px-1.5 py-0.5 rounded">

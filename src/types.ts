@@ -32,6 +32,7 @@ export interface WeeklySeriesItem {
   tokens: number
   pct: number | null
   is_current: boolean
+  plan_pct?: number
 }
 
 export interface MonthlySeriesItem {
@@ -122,4 +123,28 @@ export interface DashboardData {
   current_week_start?: string
   monthly_series?: MonthlySeriesItem[]
   monthly_median_tokens?: number
+  // Plan Anthropic (V2.1)
+  plan_name?: string
+  plan_weekly_token_quota?: number
+  plan_session_token_quota?: number
+  plan_weekly_pct_consumed?: number
+  plan_weekly_pct_projected?: number
+  plan_weekly_tokens_remaining?: number
+  // Skill + agent breakdown (V2.1)
+  skill_breakdown?: SkillBreakdownItem[]
+  agent_breakdown?: AgentBreakdownItem[]
+  breakdown_window_days?: number
+}
+
+export interface SkillBreakdownItem {
+  skill: string
+  cost: number
+  tokens: number
+  sessions: number
+}
+
+export interface AgentBreakdownItem {
+  name: string
+  count: number
+  sessions: number
 }
